@@ -1,20 +1,12 @@
-from flask import Flask, request
-
+from flask import Flask,request,render_template
 app = Flask(__name__)
+@app.route('/', methods=['GET', 'POST'])
+def index(result=None):
+    if request.args.get('mail', None):
+        result = process_text(request.args['mail'])
+    return render_template('name.html', result=result)
 
-@app.route("/")
-def index():
-    return "Hello Word : %s" %request.method
-
-@app.route("/shetu",methods=['GET', 'POST'])
-def shetu():
-    if request.method =='POST':
-        return "You are using POST"
-    else:
-        return "You are probably using GET"
-@app.route('/profile/<username>')
-def profile(username):
-    return "Hey it is  % s" % username
-
-if __name__ == "__main__":
+def process_text(text):
+    return "Email:" + text
+if __name__=='__main__':
     app.run( host='0.0.0.0',debug=True)
