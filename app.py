@@ -1,25 +1,16 @@
-from flask import Flask, render_template
-from data import Articles
+import redis
+from flask import Flask
 
 app = Flask(__name__)
-
-Articles = Articles()
-
-
+db=redis.Redis(host='localhost',port='6379',db=0)
 @app.route('/')
-def index():
-    return render_template('home.html')
+def hello_world():
+    name=db.get('name') or'World'
+    return 'Hello %s!' % name
 
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
-@app.route('/articles')
-def articles():
-    return render_template('articles.html', articles=Articles)
-
-
+@app.route('/setname/<name>')
+def setname(name):
+    db.set('name',name)
+    return 'Name updated.'
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(debug=True)
